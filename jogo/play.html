@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <title>Quimica</title>
+    <link rel="stylesheet" href="css/stylesheet.css">
+  </head>
+  <body>
+    <br><br><br><br>
+    <div id="container" class="tudo">
+      <h1>Show do Sebastião</h1>
+      <p>Responda as questões a seguir e ganhe pontos na diversa</p>
+      <div id="content" class="conteudo">
+        <h3 id="questoes"></h3>
+        <div id="alternativas" class="respostas"></div>
+        <p><button id="enviar"></button></p>
+        <p id="pontuacao"></p>
+      </div>
+    </div>
+    <div class="tudo1">
+      <br>
+      <form action="index.html" method="post">
+        <input type="submit" class="comecar" name="voltar" value="INICIO">
+      </form>
+    </div>
+    <script>
+    var pergun = [{
+"questoes": "Quem é o professor de quimica",
+"alternativas": ["Jezmael", "Bastião", "Sebastião", "Um viado veio", "Lucão"],
+"corretas": "Sebastião"
+}, {
+"questoes": "A massa de oxigênio necessária para promover a combustão completa de um mol de metano, CH4, é:?",
+"alternativas": ["16", "32", "48", "64", "128"],
+"corretas": "64"
+}, {
+"questoes": "A metanfetamina, uma substância usada como medicamento, é eliminada do organismo por meio de uma série de reações. O processo global pode ser representado pela reação  com O2 , conforme mostra a equação 4C10H15N + 55 O2 → 40CO2 + 30H2O + 2N2 A quantidade de oxigênio, em miligramas, necessária para reagir completamente com 12 mg desse medicamento é, aproximadamente, Massa molar (g/mol): C10H15N =149; O2 = 32",
+"alternativas": ["448", "130", "59", "42", "35"],
+"corretas": "35"
+}, {
+"questoes": "Fosgênio, COCl2, é um gás venenoso. Quando inalado, reage com a água nos pulmões para produzir ácido clorídrico (HCl), que causa graves danos pulmonares, levando, finalmente, à morte: por causa disso, já foi até usado como gás de guerra. A equação química dessa reação é: COCl2 + H2O → CO2 + 2 HClSe uma pessoa inalar 198 mg de fosgênio, a massa de ácido clorídrico, em gramas, que se forma nos pulmões, é igual a:",
+"alternativas": ["1,09 . 10-1.", "1,46 . 10-1.", " 2,92 . 10-1.", "3,65 . 10-2.", "7,30 . 10-2."],
+"corretas": "1,46 . 10-1."
+}];
+
+var content = $("content"),
+questoesContainer = $("questoes"),
+alternativasContainer = $("alternativas"),
+pontuacaoContainer = $("pontuacao"),
+enviarresp = $("enviar");
+
+var questoesatuais = 0,
+pontuacao = 0,
+perguntando = true;
+
+function $(id) {
+return document.getElementById(id);
+}
+
+function perguntas() {
+var alternativas = pergun[questoesatuais].alternativas,
+  alternativasHtml = "";
+
+for (var i = 0; i < alternativas.length; i++) {
+  alternativasHtml += "<input type='radio' name='pergun" + questoesatuais +
+    "' id='escolha" + (i + 1) +
+    "' value='" + alternativas[i] + "'>" +
+    " <label for='escolha" + (i + 1) + "'>" + alternativas[i] + "</label><br>";
+}
+
+questoesContainer.textContent = "Q" + (questoesatuais + 1) + ". " +
+  pergun[questoesatuais].questoes;
+
+
+alternativasContainer.innerHTML = alternativasHtml;
+
+
+if (questoesatuais === 0) {
+  pontuacaoContainer.textContent = "pontuação: 0 acertos de " +
+    pergun.length + " perguntas.";
+  enviarresp.textContent = "enviar resposta";
+}
+}
+
+function conferirRespostas() {
+if (perguntando) {
+  enviarresp.textContent = "proxima pergunta";
+  perguntando = false;
+
+  var userpick,
+    corretasIndex,
+    radios = document.getElementsByName("pergun" + questoesatuais);
+  for (var i = 0; i < radios.length; i++) {
+    if (radios[i].checked) {
+      userpick = radios[i].value;
+    }
+
+    if (radios[i].value == pergun[questoesatuais].corretas) {
+      corretasIndex = i;
+    }
+  }
+
+  var labelStyle = document.getElementsByTagName("label")[corretasIndex].style;
+  labelStyle.fontWeight = "bold";
+  if (userpick == pergun[questoesatuais].corretas) {
+    pontuacao++;
+    labelStyle.color = "#90EE90";
+  } else {
+    labelStyle.color = "#FF3030";
+  }
+
+  pontuacaoContainer.textContent = "pontuação: " + pontuacao + " acertos de " +
+    pergun.length + " perguntas.";
+} else {
+  perguntando = true;
+  enviarresp.textContent = "proxima pergunta";
+  if (questoesatuais < pergun.length - 1) {
+    questoesatuais++;
+    perguntas();
+  } else {
+    showFinalResults();
+  }
+}
+}
+
+function showFinalResults() {
+content.innerHTML = "<h2>Você terminou o jogo!!!</h2>" +
+  "<h2>Você acertou:</h2>" +
+  "<h2>" + pontuacao + " de " + pergun.length + " perguntas";
+}
+
+window.addEventListener("load", perguntas, false);
+enviarresp.addEventListener("click", conferirRespostas, false);
+
+    </script>
+  </body>
+</html>
